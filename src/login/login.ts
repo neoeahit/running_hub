@@ -8,34 +8,29 @@ import 'rxjs/add/operator/catch';
 
 import {Observable} from 'rxjs/Observable';
 import {Subject } from 'rxjs/Subject';
-import { Http, Headers, Response, RequestOptions, HTTP_PROVIDERS, URLSearchParams } from '@angular/http';
+import { Jsonp, URLSearchParams } from '@angular/http';
+import { JSONP_PROVIDERS }  from '@angular/http';
 
 let styles   = require('./login.css');
 let template = require('./login.html');
 
 @Injectable()
 class SubmitUserData {
-  constructor(private http: Http) {}
+constructor(private jsonp: Jsonp) {}
 
   submitUserData(data) {
     const endpoint = 'http://localhost:4000/auth/facebook';
-    let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    let params = new URLSearchParams();
+    params.set('user', data); // the user's search value
+    params.set('action', 'opensearch');
+    params.set('format', 'json');
+    params.set('callback', 'JSONP_CALLBACK');
     console.log(data);
-    return this.http
-      .post(endpoint, data, options)
+    return this.jsonp
+      .get(endpoint, { search : params})
       .map(res => res.json());
     }
 
-  private handleError (error: any) {
-  // In a real world app, we might use a remote logging infrastructure
-  // We'd also dig deeper into the error to get a better message
-  let errMsg = (error.message) ? error.message :
-    error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-  console.error(errMsg); // log to console instead
-  console.log("i am here")
-  return Promise.reject(errMsg);
-}
 }
 
 declare const FB:any;
@@ -45,7 +40,7 @@ declare const FB:any;
   directives: [RouterLink, CORE_DIRECTIVES, FORM_DIRECTIVES ],
   template: template,
   styles: [ styles ],
-  providers: [HTTP_PROVIDERS, SubmitUserData]
+  providers: [JSONP_PROVIDERS, SubmitUserData]
 })
 
 export class Login implements OnInit{
@@ -63,8 +58,6 @@ export class Login implements OnInit{
     onFacebookLoginClick() {
         FB.login();
     }
-
-
 
     statusChangeCallback(resp) {
         if (resp.status === 'connected') {
