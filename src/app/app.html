@@ -1,0 +1,21 @@
+<style>
+.margin-from-top {
+  margin-top: 10px;
+  margin-right: 20px;
+}
+</style>
+<router-outlet></router-outlet>
+<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" ui-sref="home">Run-Eat-Travel</a>
+    </div>
+
+    <div class="margin-from-top pull-right">
+    <button (click)="signIn()">Log In <i class="fa fa-facebook-square" aria-hidden="true"></i></button>
+    </div>
+</nav>
+
+
+<footer>
+  © 2016 Run_Eat_Travel
+</footer>
